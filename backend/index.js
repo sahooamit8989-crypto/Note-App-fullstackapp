@@ -23,6 +23,11 @@ app.use(express.json())
 app.use(cors())
 app.use("/api/v1/noteapp",noteRoutes)
 
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+
 app.listen(port, () => {
   console.log(`server listening on port ${port}`)
 })
