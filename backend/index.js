@@ -1,33 +1,37 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import cors from 'cors'
-import noteRoutes from './routes/note.route.js'
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
+import noteRoutes from "./routes/note.route.js";
 
-const app = express()
-dotenv.config()
-const port = process.env.PORT || 4002
+dotenv.config();
 
+const app = express();
+const port = process.env.PORT || 4002;
 
-//database connection
-try{
-    mongoose.connect(process.env.MONGO_URL)
-    console.log("connected to mongodb")
+// --- Middleware ---
+app.use(express.json());
+app.use(cors());
 
-}catch(error){
-    console.log("error to connected to mongodb",error)
+// --- Database connection ---
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((error) => console.error("❌ Error connecting to MongoDB:", error));
 
-}
-//routing middlewere
-app.use(express.json())
-app.use(cors())
-app.use("/api/v1/noteapp",noteRoutes)
+// --- Routes ---
+app.use("/api/v1/noteapp", noteRoutes);
 
+// Root test route
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("🚀 Backend is running. Try /api/v1/noteapp");
 });
 
-
+// --- Start Server ---
 app.listen(port, () => {
-  console.log(`server listening on port ${port}`)
-})
+  console.log(`✅ Server listening on port ${port}`);
+});
+
